@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package comment.v1;
+
+option go_package = "github.com/GoNewsProject/protonews/gen/go/comments/v1;comments";
+
+service CommentService {
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
+  rpc GetComments(GetCommentsRequest) returns (GetCommentsResponse);
+}
+
+message AddCommentRequest {
+  string news_id = 1;
+  string text = 2;
+}
+
+message AddCommentResponse {
+  string comment_id = 1;
+  bool success = 2;
+  string message = 3;  // "Комментарий добавлен" или "Комментарий отклонен"
+}
+
+message GetCommentsRequest {
+    string comment_id = 1;
+}
+
+message GetCommentsResponse {
+    string comment_id = 1;
+    string news_id = 2;
+    string text = 3;
+}
