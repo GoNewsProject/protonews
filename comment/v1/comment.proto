@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package comment.v1;
 
-option go_package = "github.com/GoNewsProject/protonews/gen/go/comments/v1;comments";
+option go_package = "github.com/GoNewsProject/protonews/censor/v1;censor";
 
 service CommentService {
   rpc AddComment(AddCommentRequest) returns (AddCommentResponse);

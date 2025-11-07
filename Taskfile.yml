@@ -1,58 +1,8 @@
 version: '3'
 
-vars:
-  PROTOC_VERSION: '26.1'
-  GO_OUT: './gen/go'
-  PROTO_DIR: './proto'
 
-tasks:
-  setup:
-    desc: 'Install protoc and necessary plugins'
-    cmds:
-      - |
-        if ! command -v protoc &> /dev/null; then
-          echo "Installing protoc v{{.PROTOC_VERSION}}..."
-          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v{{.PROTOC_VERSION}}/protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
-          unzip protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip -d $HOME/.local
-          export PATH="$PATH:$HOME/.local/bin"
-          rm protoc-{{.PROTOC_VERSION}}-linux-x86_64.zip
-        else
-          echo "protoc already installed"
-        fi
-      - |
-        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-      - |
-        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-
-  gen:go:
+gen:go:
     desc: 'Generate Go code from proto files'
     cmds:
-      - mkdir -p {{.GO_OUT}}
-      - |
-        protoc --proto_path={{.PROTO_DIR}} \
-          --go_out={{.GO_OUT}} \
-          --go_opt=paths=source_relative \
-          --go-grpc_out={{.GO_OUT}} \
-          --go-grpc_opt=paths=source_relative \
-          {{.PROTO_DIR}}/**/*.proto
-    sources:
-      - '{{.PROTO_DIR}}/**/*.proto'
-    generates:
-      - '{{.GO_OUT}}/**/*.pb.go'
-
-  clean:
-    desc: 'Clean generated files'
-    cmds:
-      - rm -rf {{.GO_OUT}}
-
-  deps:check:
-    desc: 'Check if all dependencies are installed'
-    cmds:
-      - command -v protoc || echo "protoc not installed - run 'task setup'"
-      - command -v protoc-gen-go || echo "protoc-gen-go not installed - run 'task setup'"
-      - command -v protoc-gen-go-grpc || echo "protoc-gen-go-grpc not installed - run 'task setup'"
-
-default:
-  desc: 'Show available tasks'
-  cmds:
-    - task --list
+      - protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative censor/v1/censor.proto
+      - protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative comment/v1/comment.proto

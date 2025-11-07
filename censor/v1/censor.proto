@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package censor.v1;
 
-option go_package = "github.com/GoNewsProject/protonews/gen/go/censor/v1;censor";
+option go_package = "github.com/GoNewsProject/protonews/censor/v1;censor";
 
 service CensorService {
     rpc CheckComment(CheckCommentRequest) returns (CheckCommentResponse);
@@ -17,5 +17,5 @@ message CheckCommentResponse {
     bool approved = 1;
     string reason = 2;
     string filteredComment = 3;
-    map[string]string details = 4;
+    map<string,string> details = 4;
 }
